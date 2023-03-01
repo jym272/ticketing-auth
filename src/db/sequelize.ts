@@ -6,7 +6,7 @@ const namespace = createNamespace('transaction-namespace');
 Sequelize.useCLS(namespace);
 
 let sequelizeInstance: Sequelize | null = null;
-//silly comment
+
 export const getSequelizeClient = () => {
   if (sequelizeInstance) {
     return sequelizeInstance;

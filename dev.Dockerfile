@@ -1,6 +1,6 @@
 FROM node:19-alpine AS base
 
-FROM base
+FROM base as deps
 
 WORKDIR /app
 
@@ -8,10 +8,24 @@ COPY package.json package-lock.json ./
 
 RUN npm ci
 
+FROM base as builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+RUN npm run build
+
+FROM base as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 COPY . .
 
 ENV NODE_ENV development
-
-RUN npm run build
 
 CMD npm run dev

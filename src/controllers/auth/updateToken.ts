@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { controllerErrorWithMessage, getEnvOrFail } from '@utils/index';
 import { getSequelizeClient } from '@db/sequelize';
-import { AccessType } from '@custom-types/index';
+import { Credentials } from '@custom-types/index';
 import { Auth } from '@db/models';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -12,7 +12,7 @@ const secret = getEnvOrFail('JWT_SECRET');
 
 export const updateTokenController = () => {
   return async (req: Request, res: Response) => {
-    const { password, email } = req.body as AccessType;
+    const { password, email } = req.body as Credentials;
     const auth = await Auth.findOne({
       where: {
         email

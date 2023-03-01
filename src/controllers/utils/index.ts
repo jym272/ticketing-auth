@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { ErrorWithStatus } from '@custom-types/index';
 
 const crashServerController = () => {
   return (req: Request, res: Response) => {
@@ -19,9 +20,11 @@ const envController = () => {
   };
 };
 
-const notFoundController = () => {
-  return (req: Request, res: Response) => {
-    res.status(404).send('Not Found!');
+const errorController = () => {
+  // eslint-disable-next-line no-unused-vars -- next is required for express error handling
+  return (err: ErrorWithStatus, req: Request, res: Response, next: NextFunction) => {
+    const { message, statusCode } = err;
+    res.status(statusCode).json({ message });
   };
 };
 
@@ -29,5 +32,5 @@ export const utilsController = {
   crashServer: crashServerController(),
   health: healthController(),
   env: envController(),
-  notFound: notFoundController()
+  errorHandler: errorController()
 };

@@ -4,7 +4,7 @@ import { getEnvOrFail, successConnectionMsg } from '@utils/index';
 const { server } = initializeSetup();
 
 const PORT = getEnvOrFail('PORT');
-///asd
+
 void (async () => {
   try {
     await startSetup(server);

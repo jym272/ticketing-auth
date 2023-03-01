@@ -8,7 +8,7 @@ const sequelize = getSequelizeClient();
 
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
 
-export const hashedPasswordController = () => {
+export const currentUserController = () => {
   return async (req: Request, res: Response) => {
     const { password, email } = req.body as Credentials;
     const hashPassword = await bcrypt.hash(password + pepper, 10);

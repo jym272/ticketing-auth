@@ -1,4 +1,5 @@
 import express from 'express';
+import 'express-async-errors';
 import { addRoutes } from '@routes/index';
 import { addMiddlewares } from '@middlewares/index';
 import { createSequelize, initializeSequelize } from '@db/sequelize';

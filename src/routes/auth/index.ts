@@ -3,6 +3,7 @@ import { authController } from '@controllers/auth';
 
 export const auth = Router();
 
-auth.post('/hashed-password', authController.hashedPassword);
-auth.post('/update-token', authController.updateToken);
-auth.get('/verify-token/:token', authController.verifyToken);
+auth.post('/api/users/signup', authController.signup);
+auth.post('/api/users/signin', authController.signin);
+auth.post('/api/users/signout', authController.signout);
+auth.get('/api/users/current-user', authController.currentUser);

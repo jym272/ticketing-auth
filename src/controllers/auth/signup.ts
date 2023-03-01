@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { controllerErrorWithMessage, getEnvOrFail } from '@utils/index';
+import { cleanEmail, getEnvOrFail, isValidEmail, throwError } from '@utils/index';
 import { getSequelizeClient } from '@db/sequelize';
 import { Credentials } from '@custom-types/index';
 import { Auth } from '@db/models';
@@ -8,9 +8,17 @@ const sequelize = getSequelizeClient();
 
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
 
-export const hashedPasswordController = () => {
+export const signupController = () => {
   return async (req: Request, res: Response) => {
-    const { password, email } = req.body as Credentials;
+    const { email: rawEmail, password } = req.body as Credentials;
+    const email = cleanEmail(rawEmail);
+
+    if (!isValidEmail(email)) {
+      return throwError('Invalid email.', 400);
+    }
+    // TODO: create validation controller
+    // check if email already exists
+    // const { password, email } = req.body as AccessType;
     const hashPassword = await bcrypt.hash(password + pepper, 10);
 
     try {
@@ -22,7 +30,7 @@ export const hashedPasswordController = () => {
       });
       return res.json({ message: 'Auth created.' });
     } catch (err) {
-      return controllerErrorWithMessage(res, err, 'Creating Auth failed.');
+      return throwError('Creating Auth failed.', 500, err);
     }
   };
 };

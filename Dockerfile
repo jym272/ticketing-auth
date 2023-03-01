@@ -32,6 +32,6 @@ COPY --from=builder --chown=nodeuser:nodejs /app/dist ./dist
 
 USER nodeuser
 
-ENV NODE_ENV=production
+ENV NODE_ENV production
 
 CMD ["node", "dist/server.js"]
