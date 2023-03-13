@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { utilsController } from '@controllers/index';
 import { throwError } from '@utils/messages';
+import { httpStatusCodes } from '@utils/statusCodes';
 
 export const utils = Router();
 
@@ -8,6 +9,5 @@ utils.get('/crash-server', utilsController.crashServer);
 utils.get('/health', utilsController.health);
 utils.get('/env', utilsController.env);
 utils.all('*', () => {
-  return throwError('Not Found.', 404);
+  throwError('Not Found.', httpStatusCodes.NOT_FOUND);
 });
-utils.use(utilsController.errorHandler);

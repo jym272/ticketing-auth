@@ -3,6 +3,7 @@ import 'express-async-errors';
 import { addRoutes } from '@routes/index';
 import { addMiddlewares } from '@middlewares/index';
 import { createSequelize, initializeSequelize } from '@db/sequelize';
+import { utilsController } from '@controllers/utils';
 
 const createServer = (): express.Express => {
   return express();
@@ -17,9 +18,16 @@ export const initializeSetup = () => {
   };
 };
 
+// otherwise the cookie will not be sent over https connection
+const configureServer = (server: express.Express) => {
+  server.set('trust proxy', true);
+};
+
 export const startSetup = async (server: express.Express) => {
   const sequelize = createSequelize();
   await initializeSequelize(sequelize);
+  configureServer(server);
   addMiddlewares(server);
   addRoutes(server);
+  server.use(utilsController.errorHandler);
 };

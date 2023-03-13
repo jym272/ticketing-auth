@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { cleanEmail, getEnvOrFail, isValidEmail, throwError } from '@utils/index';
+import { cleanEmail, getEnvOrFail, httpStatusCodes, isValidEmail, isValidPassword, throwError } from '@utils/index';
 import { getSequelizeClient } from '@db/sequelize';
 import { Credentials } from '@custom-types/index';
-import { Auth } from '@db/models';
+import { User } from '@db/models';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 const sequelize = getSequelizeClient();
-
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
+const secret = getEnvOrFail('JWT_SECRET');
+const { BAD_REQUEST, CREATED, CONFLICT, INTERNAL_SERVER_ERROR } = httpStatusCodes;
 
 export const signupController = () => {
   return async (req: Request, res: Response) => {
@@ -14,23 +16,49 @@ export const signupController = () => {
     const email = cleanEmail(rawEmail);
 
     if (!isValidEmail(email)) {
-      return throwError('Invalid email.', 400);
+      throwError('Invalid email.', BAD_REQUEST);
     }
-    // TODO: create validation controller
-    // check if email already exists
-    // const { password, email } = req.body as AccessType;
+    const userAlreadyExists = await User.findOne({
+      where: {
+        email
+      }
+    });
+    if (userAlreadyExists) {
+      throwError('Email already exists.', CONFLICT);
+    }
+    if (!isValidPassword(password)) {
+      throwError('Invalid password.', BAD_REQUEST);
+    }
     const hashPassword = await bcrypt.hash(password + pepper, 10);
 
     try {
-      await sequelize.transaction(async () => {
-        return await Auth.create({
+      const user = await sequelize.transaction(async () => {
+        return await User.create({
           hashPassword,
           email
         });
       });
-      return res.json({ message: 'Auth created.' });
+
+      const payload = {
+        permissions: {
+          authenticate: true
+        }
+      };
+      const options = {
+        expiresIn: '1d',
+        issuer: 'auth-api',
+        subject: user.email,
+        jwtid: user.id.toString(),
+        audience: 'ticketing-frontend'
+      };
+      const token = jwt.sign(payload, secret, options);
+      req.session = {
+        jwt: token
+      };
+
+      return res.status(CREATED).json({ message: 'User created.' });
     } catch (err) {
-      return throwError('Creating Auth failed.', 500, err);
+      throwError('Creating User failed.', INTERNAL_SERVER_ERROR, err);
     }
   };
 };
