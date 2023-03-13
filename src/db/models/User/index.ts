@@ -7,4 +7,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare hashPassword: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
+  toJSON() {
+    return { ...this.get(), hashPassword: 'hidden' };
+  }
 }

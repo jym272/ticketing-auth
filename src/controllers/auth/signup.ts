@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { cleanEmail, getEnvOrFail, httpStatusCodes, isValidEmail, isValidPassword, throwError } from '@utils/index';
+import { getEnvOrFail, httpStatusCodes, throwError } from '@utils/index';
 import { getSequelizeClient } from '@db/sequelize';
 import { Credentials } from '@custom-types/index';
 import { User } from '@db/models';
@@ -8,16 +8,12 @@ import jwt from 'jsonwebtoken';
 const sequelize = getSequelizeClient();
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
 const secret = getEnvOrFail('JWT_SECRET');
-const { BAD_REQUEST, CREATED, CONFLICT, INTERNAL_SERVER_ERROR } = httpStatusCodes;
+const { CREATED, CONFLICT, INTERNAL_SERVER_ERROR } = httpStatusCodes;
 
 export const signupController = () => {
   return async (req: Request, res: Response) => {
-    const { email: rawEmail, password } = req.body as Credentials;
-    const email = cleanEmail(rawEmail);
+    const { email, password } = res.locals as Credentials;
 
-    if (!isValidEmail(email)) {
-      throwError('Invalid email.', BAD_REQUEST);
-    }
     const userAlreadyExists = await User.findOne({
       where: {
         email
@@ -26,9 +22,7 @@ export const signupController = () => {
     if (userAlreadyExists) {
       throwError('Email already exists.', CONFLICT);
     }
-    if (!isValidPassword(password)) {
-      throwError('Invalid password.', BAD_REQUEST);
-    }
+
     const hashPassword = await bcrypt.hash(password + pepper, 10);
 
     try {
@@ -51,6 +45,7 @@ export const signupController = () => {
         jwtid: user.id.toString(),
         audience: 'ticketing-frontend'
       };
+      // the user is only sign up, TODO: maybe send the token when the user is logged in
       const token = jwt.sign(payload, secret, options);
       req.session = {
         jwt: token

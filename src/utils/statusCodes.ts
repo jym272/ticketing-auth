@@ -10,6 +10,8 @@ enum HttpStatusCodes400 {
   // eslint-disable-next-line no-unused-vars
   BAD_REQUEST = 400,
   // eslint-disable-next-line no-unused-vars
+  UNAUTHORIZED = 401,
+  // eslint-disable-next-line no-unused-vars
   NOT_FOUND = 404,
   // eslint-disable-next-line no-unused-vars
   CONFLICT = 409
