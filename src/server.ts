@@ -1,5 +1,5 @@
 import { initializeSetup, startSetup } from './setup';
-import { getEnvOrFail, successConnectionMsg } from '@utils/index';
+import { getEnvOrFail, log, successConnectionMsg } from '@utils/index';
 
 const { server } = initializeSetup();
 
@@ -12,8 +12,7 @@ void (async () => {
       successConnectionMsg(`${String.fromCodePoint(0x1f680)} Server is running on port ${PORT}`)
     );
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
+    log(error);
     process.exitCode = 1;
   }
 })();

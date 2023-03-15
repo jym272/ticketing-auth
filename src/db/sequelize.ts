@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { createNamespace } from 'cls-hooked';
 import { initDefinitions } from '@db/definitions';
 import { config } from '@utils/sequelize';
+import { activateLogging, log } from '@utils/messages';
 const namespace = createNamespace('transaction-namespace');
 Sequelize.useCLS(namespace);
 
@@ -14,8 +15,7 @@ export const getSequelizeClient = () => {
   sequelizeInstance = new Sequelize(config.db.database, config.db.user, config.db.password, {
     host: config.db.host,
     dialect: 'postgres',
-    // eslint-disable-next-line no-console
-    logging: process.env.CI ? false : console.log,
+    logging: activateLogging() ? log : false,
     port: Number(config.db.port),
     pool: {
       max: 5,

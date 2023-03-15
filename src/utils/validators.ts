@@ -1,5 +1,5 @@
 export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,14}$/;
   return emailRegex.test(email);
 };
 // min 8 characters, 1 uppercase, 1 lowercase, 1 number, no special characters

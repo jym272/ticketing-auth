@@ -1,4 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { logFinished, logRunning } from '../../test-utils';
+import { httpStatusCodes } from '@utils/statusCodes';
+
+// eslint-disable-next-line no-empty-pattern -- because we need to pass only the testInfo
+test.beforeEach(({}, testInfo) => logRunning(testInfo));
+
+// eslint-disable-next-line no-empty-pattern -- because we need to pass only the testInfo
+test.afterEach(({}, testInfo) => logFinished(testInfo));
 
 test.describe('routes: utils', () => {
   test('get health route', async ({ request }) => {
@@ -7,7 +15,7 @@ test.describe('routes: utils', () => {
 
     expect(response.ok()).toBe(true);
     expect(body.toString()).toBe('OK');
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(httpStatusCodes.OK);
   });
   test('get env route, compare PORT', async ({ request }) => {
     const response = await request.get('/env');
@@ -17,14 +25,15 @@ test.describe('routes: utils', () => {
 
     expect(envObject.PORT).toBe(process.env.PORT);
     expect(response.ok()).toBe(true);
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(httpStatusCodes.OK);
   });
   test('wildcard route', async ({ request }) => {
     const randomString = Math.random().toString(36).substring(7);
     const response = await request.get(`/${randomString}`);
     const body = await response.body();
     expect(response.ok()).toBe(false);
-    expect(body.toString()).toBe('Not Found!');
-    expect(response.status()).toBe(404);
+    const { message } = JSON.parse(body.toString()) as { message: string };
+    expect(message).toBe('Not Found.');
+    expect(response.status()).toBe(httpStatusCodes.NOT_FOUND);
   });
 });

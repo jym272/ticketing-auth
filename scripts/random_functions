@@ -25,6 +25,10 @@ function get_random_port_not_used() {
   echo "$port"
 }
 
+function get_random_secret() {
+  openssl rand -base64 32
+}
+
 #function main() {
 #  local port
 #  port=$(get_random_port_not_used)

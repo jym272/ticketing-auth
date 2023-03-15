@@ -36,7 +36,6 @@ if npx playwright test; then
   playwright_test_exit_code=0
 fi
 
-#node tests/cleanup.js
 echo "Stopping server..."
 kill $node_pid
 

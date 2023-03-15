@@ -2,54 +2,29 @@
 
 set -eou pipefail
 
-#declare env_file=".env.test"
-#declare temp="some_value"
-#
-#if [[ ! -f $env_file ]]; then
-#  echo -e "\e[1;31m$env_file not found\e[0m"
-#  exit 1
-#fi
-#
-#function getenv() {
-#  local var_name=$1
-#  local temporal
-#  temporal=$(grep "$var_name" $env_file | cut -d '=' -f 2) || exit 1
-#  echo "$temporal"
-#};
-#
-#function error_exit()
-#{
-#    echo -e "$0: \e[1;31m$* not found in $env_file file\e[0m" 1>&2
-#    exit 1
-#}
-
-#temp=$(getenv "MONGO_INITDB_USERNAME") || error_exit "MONGO_INITDB_USERNAME"
-#export MONGO_INITDB_USERNAME=$temp
-#
-#temp=$(getenv "MONGO_INITDB_PASSWORD") || (error_exit "MONGO_INITDB_PASSWORD")
-#export MONGO_INITDB_PASSWORD=$temp
-#
-#temp=$(getenv "MONGO_INITDB_DATABASE") || (error_exit "MONGO_INITDB_DATABASE")
-#export MONGO_INITDB_DATABASE=$temp
-
-#temp=$(getenv "PORT") || (error_exit "PORT")
-#export PORT=$temp
-
 dir=$(dirname "$0")
-source "$dir"/random_port
+source "$dir"/random_functions
 
 port=$(get_random_port_not_used)
 export PORT=$port
 
 postgres_port=$(get_random_port_not_used)
 export POSTGRES_PORT=$postgres_port
+export POSTGRES_USER=jorge
+export POSTGRES_DB=auth
+export POSTGRES_PASSWORD=123456
+
+export POSTGRES_HOST=localhost
+random_secret=$(get_random_secret)
+export PASSWORD_PEPPER=$random_secret
+random_secret=$(get_random_secret)
+export JWT_SECRET=$random_secret
 
 echo -e "\e[1;32mPostgres db\e[0m"
 export COMPOSE_PROJECT_NAME=auth-api-test
 docker compose -f "$dir"/docker-compose.test.yml up -d
 
-#1 worker for playwright, important for test order and avoid logging in case of intentional errors
-export CI=true
-
+export NODE_ENV=test
 bash "$dir"/test --build
-bash "$dir"/down-test-container.sh
+# TODO: cuando bajar los containers??
+#[ -z "${NODE_ENV:-}" ] && bash "$dir"/down-test-container || echo "NODE_ENV=true, containers not down"
