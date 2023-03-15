@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getEnvOrFail } from '@utils/env';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import { JwtPayloadCustom } from '@custom-types/index';
 
 const secret = getEnvOrFail('JWT_SECRET');
 export const verifyCurrentUserController = () => {
@@ -9,7 +10,7 @@ export const verifyCurrentUserController = () => {
       return next();
     }
     try {
-      req.currentUser = jwt.verify(String(req.session.jwt), secret) as JwtPayload;
+      req.currentUser = jwt.verify(String(req.session.jwt), secret) as JwtPayloadCustom;
     } catch (e) {
       /* empty */
     }

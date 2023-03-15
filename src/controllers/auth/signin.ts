@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import { getEnvOrFail, httpStatusCodes, throwError } from '@utils/index';
+import { getEnvOrFail, httpStatusCodes, signJwtToken, throwError } from '@utils/index';
 import { Credentials } from '@custom-types/index';
 import { User } from '@db/models';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 const { BAD_REQUEST, OK } = httpStatusCodes;
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
-const secret = getEnvOrFail('JWT_SECRET');
 
 export const signinController = () => {
   return async (req: Request, res: Response) => {
@@ -24,21 +22,8 @@ export const signinController = () => {
       throwError('Invalid credentials.', BAD_REQUEST);
     }
 
-    const payload = {
-      permissions: {
-        authenticate: true
-      }
-    };
-    const options = {
-      expiresIn: '1d',
-      issuer: 'auth-api',
-      subject: user.email,
-      jwtid: user.id.toString(),
-      audience: 'ticketing-frontend'
-    };
-    const token = jwt.sign(payload, secret, options);
     req.session = {
-      jwt: token
+      jwt: signJwtToken(user)
     };
 
     return res.status(OK).json({ message: 'User logged in.' });

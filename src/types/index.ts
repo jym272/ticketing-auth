@@ -1,4 +1,5 @@
 import { HttpStatusCodes } from '@utils/statusCodes';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface Credentials {
   password: string;
@@ -7,4 +8,10 @@ export interface Credentials {
 
 export interface ErrorWithStatus extends Error {
   statusCode: HttpStatusCodes;
+}
+
+export interface JwtPayloadCustom extends JwtPayload {
+  permissions: {
+    authenticated: boolean;
+  };
 }
