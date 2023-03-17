@@ -18,7 +18,7 @@ export const signupController = () => {
       }
     });
     if (userAlreadyExists) {
-      throwError('Email already exists.', CONFLICT);
+      throwError('Email already exists.', CONFLICT, new Error(`User with email ${email} already exists.`));
     }
 
     const hashPassword = await bcrypt.hash(password + pepper, 10);
@@ -37,7 +37,11 @@ export const signupController = () => {
 
       return res.status(CREATED).json({ message: 'User created.' });
     } catch (err) {
-      throwError('Creating User failed.', INTERNAL_SERVER_ERROR, err);
+      let error = new Error(`Creating User failed. email ${email}.`);
+      if (err instanceof Error) {
+        error = err;
+      }
+      throwError('Creating User failed.', INTERNAL_SERVER_ERROR, error);
     }
   };
 };

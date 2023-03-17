@@ -15,11 +15,11 @@ export const signinController = () => {
       }
     });
     if (!user) {
-      return throwError('Invalid credentials.', BAD_REQUEST);
+      return throwError('Invalid credentials.', BAD_REQUEST, new Error(`User with email ${email} not found.`));
     }
     const isPasswordValid = await bcrypt.compare(password + pepper, user.hashPassword);
     if (!isPasswordValid) {
-      throwError('Invalid credentials.', BAD_REQUEST);
+      throwError('Invalid credentials.', BAD_REQUEST, new Error(`Password for user with email ${email} is not valid.`));
     }
 
     req.session = {

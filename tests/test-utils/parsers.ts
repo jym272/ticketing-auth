@@ -6,7 +6,10 @@ export const parseMessage = async (response: APIResponse) => {
   return message;
 };
 
-export const getSession = (cookie: string) => {
+export const getSession = (cookie: string | undefined) => {
+  if (!cookie) {
+    throw new Error('cookie is not defined');
+  }
   const dataValues = cookie.split(';');
   for (const value of dataValues) {
     if (value.trim().startsWith('session')) {
