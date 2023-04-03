@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { homeController } from '@controllers/home';
+import { commonController } from '@jym272ticketing/common';
+const { getHome } = commonController;
 
 export const home = Router();
 
-home.get('/', homeController.get);
+home.get('/', getHome);

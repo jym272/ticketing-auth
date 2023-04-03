@@ -3,13 +3,11 @@ import { signupController } from '@controllers/auth/signup';
 import { signoutController } from '@controllers/auth/signout';
 import { currentUserController } from '@controllers/auth/currentUser';
 import { checkCredentialsController } from '@controllers/auth/checkCredentials';
-import { verifyCurrentUserController } from '@controllers/auth/verifyCurrentUser';
 
 export const authController = {
   checkCredentials: checkCredentialsController(),
   signin: signinController(),
   signup: signupController(),
   signout: signoutController(),
-  currentUser: currentUserController(),
-  verifyCurrentUser: verifyCurrentUserController()
+  currentUser: currentUserController()
 };
