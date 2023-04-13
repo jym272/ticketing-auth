@@ -1,7 +1,7 @@
 import express from 'express';
-import { home } from '@routes/home';
-import { utils } from '@routes/utils';
 import { auth } from '@routes/auth';
+import { routes as commonRoutes } from '@jym272ticketing/common';
+const { utils, home } = commonRoutes;
 
 const routes = [home, auth, utils];
 
