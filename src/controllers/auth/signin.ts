@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import { getEnvOrFail, httpStatusCodes, signJwtToken, throwError } from '@utils/index';
+import { signJwtToken } from '@utils/index';
 import { Credentials } from '@custom-types/index';
 import { User } from '@db/models';
 import bcrypt from 'bcrypt';
+import { getEnvOrFail, httpStatusCodes, throwError } from '@jym272ticketing/common/dist/utils';
 const { BAD_REQUEST, OK } = httpStatusCodes;
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
 

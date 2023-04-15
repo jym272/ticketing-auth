@@ -1,7 +1,6 @@
 import { User } from '@db/models';
 import jwt from 'jsonwebtoken';
-import { getEnvOrFail } from '@utils/env';
-import { signJwtTokenOptions } from '@utils/constants';
+import { getEnvOrFail, signJwtTokenOptions } from '@jym272ticketing/common/dist/utils';
 const secret = getEnvOrFail('JWT_SECRET');
 
 export const signJwtToken = (user: User) => {

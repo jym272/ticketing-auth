@@ -1,5 +1,5 @@
 import { initializeSetup, startSetup } from './setup';
-import { getEnvOrFail, log, rocketEmoji, successConnectionMsg } from '@utils/index';
+import { getEnvOrFail, log, rocketEmoji, successConnectionMsg } from '@jym272ticketing/common/dist/utils';
 
 const { server } = initializeSetup();
 

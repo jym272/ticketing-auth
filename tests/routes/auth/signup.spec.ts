@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { logFinished, logRunning, parseMessage, truncateUserTable } from '../../test-utils';
-import { httpStatusCodes } from '@utils/statusCodes';
+import {
+  httpStatusCodes,
+  logFinished,
+  logRunning,
+  parseMessage,
+  truncateTables
+} from '@jym272ticketing/common/dist/utils';
 const { BAD_REQUEST, CREATED, CONFLICT } = httpStatusCodes;
 
 // eslint-disable-next-line no-empty-pattern -- because we need to pass only the testInfo
@@ -11,7 +16,7 @@ test.afterEach(({}, testInfo) => logFinished(testInfo));
 
 test.describe('routes: /api/users/signup creating a user', () => {
   test.beforeAll(async () => {
-    await truncateUserTable();
+    await truncateTables('user');
   });
   test('invalid password', async ({ request }) => {
     const auth = {
@@ -50,7 +55,7 @@ test.describe('routes: /api/users/signup creating a user', () => {
 
 test.describe('routes: /api/users/signup user already exists', () => {
   test.beforeAll(async ({ request }) => {
-    await truncateUserTable();
+    await truncateTables('user');
     const auth = {
       password: 'ValidPassword1234',
       email: 'email@valid.email'
@@ -72,7 +77,7 @@ test.describe('routes: /api/users/signup user already exists', () => {
 
 test.describe('routes: /api/users/signup checking jwt cookie after successful signup', () => {
   test.beforeAll(async () => {
-    await truncateUserTable();
+    await truncateTables('user');
   });
   test("Checking jwt cookie, it's going to failed if NODE_ENV is not test", async ({ request }) => {
     const auth = {

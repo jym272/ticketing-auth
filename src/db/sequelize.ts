@@ -1,8 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { createNamespace } from 'cls-hooked';
 import { initDefinitions } from '@db/definitions';
-import { config } from '@utils/sequelize';
-import { activateLogging, log } from '@utils/messages';
+import { activateLogging, config, log } from '@jym272ticketing/common/dist/utils';
 const namespace = createNamespace('transaction-namespace');
 Sequelize.useCLS(namespace);
 

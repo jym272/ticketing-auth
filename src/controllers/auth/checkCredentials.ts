@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { cleanEmail, httpStatusCodes, isValidEmail, isValidPassword, throwError } from '@utils/index';
+import { cleanEmail, isValidEmail, isValidPassword } from '@utils/index';
 import { Credentials } from '@custom-types/index';
+import { httpStatusCodes, throwError } from '@jym272ticketing/common/dist/utils';
 
 export const checkCredentialsController = () => {
   return (req: Request, res: Response, next: NextFunction) => {

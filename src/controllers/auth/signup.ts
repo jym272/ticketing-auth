@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { getEnvOrFail, httpStatusCodes, signJwtToken, throwError } from '@utils/index';
+import { signJwtToken } from '@utils/index';
 import { getSequelizeClient } from '@db/sequelize';
 import { Credentials } from '@custom-types/index';
 import { User } from '@db/models';
 import bcrypt from 'bcrypt';
+import { getEnvOrFail, httpStatusCodes, throwError } from '@jym272ticketing/common/dist/utils';
 const sequelize = getSequelizeClient();
 const pepper = getEnvOrFail('PASSWORD_PEPPER');
 const { CREATED, CONFLICT, INTERNAL_SERVER_ERROR } = httpStatusCodes;

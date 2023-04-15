@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { authController } from '@controllers/auth';
 const { signup, signin, signout, currentUser, checkCredentials } = authController;
 import { commonController } from '@jym272ticketing/common';
+import { getEnvOrFail } from '@jym272ticketing/common/dist/utils';
 const { verifyCurrentUser } = commonController;
-import { getEnvOrFail } from '@utils/env';
 
 export const auth = Router();
 const secret = getEnvOrFail('JWT_SECRET');

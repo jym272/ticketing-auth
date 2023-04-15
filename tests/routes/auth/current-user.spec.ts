@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { logFinished, logRunning, truncateUserTable } from '../../test-utils';
-import { JwtPayloadCustom } from '@custom-types/index';
-import { signJwtTokenOptions } from '@utils/constants';
+import { logFinished, logRunning, signJwtTokenOptions, truncateTables } from '@jym272ticketing/common/dist/utils';
+import { JwtPayloadCustom } from '@jym272ticketing/common/dist/types';
 
 // eslint-disable-next-line no-empty-pattern -- because we need to pass only the testInfo
 test.beforeEach(({}, testInfo) => logRunning(testInfo));
@@ -15,7 +14,7 @@ test.describe('routes: /api/users/current-user user signup', () => {
     email: 'email@valid.email'
   };
   test.beforeAll(async ({ request }) => {
-    await truncateUserTable();
+    await truncateTables('user');
     // the cookie is set in the browser
     await request.post('/api/users/signup', { data: auth });
   });
@@ -43,7 +42,7 @@ test.describe('routes: /api/users/current-user user signup', () => {
 
 test.describe('routes: /api/users/current-user user null', () => {
   test.beforeAll(async () => {
-    await truncateUserTable();
+    await truncateTables('user');
   });
   test('there user was never signup or signin, there is no cookie', async ({ request }) => {
     const response = await request.get('/api/users/current-user');
@@ -60,11 +59,11 @@ test.describe('routes: /api/users/current-user user exists but it was removed fr
     email: 'email@valid.email'
   };
   test.beforeAll(async ({ request }) => {
-    await truncateUserTable();
+    await truncateTables('user');
     await request.post('/api/users/signup', { data: auth });
   });
   test.beforeEach(async () => {
-    await truncateUserTable();
+    await truncateTables('user');
   });
   test('cookie exists, user signup but was removed from db', async ({ request }) => {
     const response = await request.get('/api/users/current-user');
