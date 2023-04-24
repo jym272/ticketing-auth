@@ -21,6 +21,6 @@ test.describe('routes: /api/users/signout', () => {
     expect(response.ok()).toBe(true);
     const cookie = response.headers()['set-cookie'];
     const session = getSession(cookie);
-    expect(session).toBe('asdasd');
+    expect(session).toBe('');
   });
 });
