@@ -4,7 +4,7 @@ import { getEnvOrFail, log, rocketEmoji, successConnectionMsg } from '@jym272tic
 const { server } = initializeSetup();
 
 const PORT = getEnvOrFail('PORT');
-// some comment
+
 void (async () => {
   try {
     await startSetup(server);
